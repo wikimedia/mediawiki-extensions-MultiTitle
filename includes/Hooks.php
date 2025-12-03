@@ -9,10 +9,8 @@ use MediaWiki\Page\PageProps;
 use MediaWiki\Title\Title;
 
 class Hooks implements GetDoubleUnderscoreIDsHook, ArticleViewRedirectHook, ArticleViewFooterHook {
-	private PageProps $mPageProps;
 
-	public function __construct( PageProps $pageProps ) {
-		$this->mPageProps = $pageProps;
+	public function __construct( private readonly PageProps $pageProps ) {
 	}
 
 	/** @inheritDoc */
@@ -27,16 +25,13 @@ class Hooks implements GetDoubleUnderscoreIDsHook, ArticleViewRedirectHook, Arti
 		if ( !$title ) {
 			return null;
 		}
-		$properties = $this->mPageProps->getProperties( $title, $propertyName );
+		$properties = $this->pageProps->getProperties( $title, $propertyName );
 		return $properties[$title->getId()] ?? null;
 	}
 
 	/** @inheritDoc */
 	public function onArticleViewRedirect( $article ): bool {
-		if ( $this->getPageProperty( $article->getRedirectedFrom(), 'keeptitle' ) !== null ) {
-			return false;
-		}
-		return true;
+		return $this->getPageProperty( $article->getRedirectedFrom(), 'keeptitle' ) === null;
 	}
 
 	/** @inheritDoc */
@@ -47,7 +42,8 @@ class Hooks implements GetDoubleUnderscoreIDsHook, ArticleViewRedirectHook, Arti
 		}
 
 		$outputPage = $article->getContext()->getOutput();
-		$redirectDisplayTitle = $this->getPageProperty( $redirectTitle, 'displaytitle' ) ?? $redirectTitle->getPrefixedText();
+		$redirectDisplayTitle = $this->getPageProperty( $redirectTitle, 'displaytitle' )
+			?? $redirectTitle->getPrefixedText();
 		$outputPage->setPageTitle( $redirectDisplayTitle );
 		$outputPage->setDisplayTitle( $redirectDisplayTitle );
 	}

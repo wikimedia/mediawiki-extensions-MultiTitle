@@ -2,15 +2,15 @@
 
 namespace MediaWiki\Extension\MultiTitle\Tests\Integration;
 
-use MediaWikiIntegrationTestCase;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Page\Article;
 use MediaWiki\Title\Title;
+use MediaWikiIntegrationTestCase;
 use PHPUnit\Framework\Assert;
 
 /**
- * @covers MediaWiki\Extension\MultiTitle\Hooks
+ * @covers \MediaWiki\Extension\MultiTitle\Hooks
  * @group Database
  */
 class MultiTitleTest extends MediaWikiIntegrationTestCase {
