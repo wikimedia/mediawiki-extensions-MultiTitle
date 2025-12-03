@@ -7,7 +7,6 @@ use MediaWiki\Output\OutputPage;
 use MediaWiki\Page\Article;
 use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
-use PHPUnit\Framework\Assert;
 
 /**
  * @covers \MediaWiki\Extension\MultiTitle\Hooks
@@ -30,8 +29,8 @@ class MultiTitleTest extends MediaWikiIntegrationTestCase {
 		$this->insertPage( 'Desist', '#REDIRECT [[Cease]]' );
 
 		$output = $this->viewPage( Title::newFromText( 'Cease' ), Title::newFromText( 'Desist' ) );
-		Assert::assertStringContainsString( 'Cease', $output->getPageTitle() );
-		Assert::assertEquals( 'Desist', $output->getJSVars()["wgRedirectedFrom"] );
+		$this->assertStringContainsString( 'Cease', $output->getPageTitle() );
+		$this->assertEquals( 'Desist', $output->getJSVars()["wgRedirectedFrom"] );
 	}
 
 	public function testKeeptitleRedirect(): void {
@@ -39,8 +38,8 @@ class MultiTitleTest extends MediaWikiIntegrationTestCase {
 		$this->insertPage( 'Desist', '#REDIRECT [[Cease]] __KEEPTITLE__' );
 
 		$output = $this->viewPage( Title::newFromText( 'Cease' ), Title::newFromText( 'Desist' ) );
-		Assert::assertStringContainsString( 'Desist', $output->getPageTitle() );
-		Assert::assertArrayNotHasKey( "wgRedirectedFrom", $output->getJSVars() );
+		$this->assertStringContainsString( 'Desist', $output->getPageTitle() );
+		$this->assertArrayNotHasKey( "wgRedirectedFrom", $output->getJSVars() );
 	}
 
 	public function testKeeptitleWithDisplaytitle(): void {
@@ -48,7 +47,7 @@ class MultiTitleTest extends MediaWikiIntegrationTestCase {
 		$this->insertPage( 'Desist', '#REDIRECT [[Cease]] __KEEPTITLE__ {{DISPLAYTITLE:\'\'Desist\'\'}}' );
 
 		$output = $this->viewPage( Title::newFromText( 'Cease' ), Title::newFromText( 'Desist' ) );
-		Assert::assertStringContainsString( '<i>Desist</i>', $output->getPageTitle() );
+		$this->assertStringContainsString( '<i>Desist</i>', $output->getPageTitle() );
 	}
 
 	/* public function testKeeptitleRedirect(): void { */
