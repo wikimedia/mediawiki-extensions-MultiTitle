@@ -5,8 +5,8 @@ namespace MediaWiki\Extension\MultiTitle;
 use MediaWiki\Hook\GetDoubleUnderscoreIDsHook;
 use MediaWiki\Page\Hook\ArticleViewFooterHook;
 use MediaWiki\Page\Hook\ArticleViewRedirectHook;
+use MediaWiki\Page\PageIdentity;
 use MediaWiki\Page\PageProps;
-use MediaWiki\Title\Title;
 
 class Hooks implements GetDoubleUnderscoreIDsHook, ArticleViewRedirectHook, ArticleViewFooterHook {
 
@@ -21,12 +21,12 @@ class Hooks implements GetDoubleUnderscoreIDsHook, ArticleViewRedirectHook, Arti
 	/**
 	 * Get the given property of a page, if it exists and has the property, or null otherwise.
 	 */
-	private function getPageProperty( Title|null $title, string $propertyName ): ?string {
-		if ( !$title ) {
+	private function getPageProperty( ?PageIdentity $page, string $propertyName ): ?string {
+		if ( !$page ) {
 			return null;
 		}
-		$properties = $this->pageProps->getProperties( $title, $propertyName );
-		return $properties[$title->getId()] ?? null;
+		$properties = $this->pageProps->getProperties( $page, $propertyName );
+		return $properties[$page->getId()] ?? null;
 	}
 
 	/** @inheritDoc */
