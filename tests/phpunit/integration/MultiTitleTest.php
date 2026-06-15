@@ -25,28 +25,34 @@ class MultiTitleTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testNormalRedirect(): void {
-		$this->insertPage( 'Cease', 'to stop' );
-		$this->insertPage( 'Desist', '#REDIRECT [[Cease]]' );
+		$cease = Title::makeTitle( NS_MAIN, 'Cease' );
+		$desist = Title::makeTitle( NS_MAIN, 'Desist' );
+		$this->insertPage( $cease, 'to stop' );
+		$this->insertPage( $desist, '#REDIRECT [[Cease]]' );
 
-		$output = $this->viewPage( Title::newFromText( 'Cease' ), Title::newFromText( 'Desist' ) );
+		$output = $this->viewPage( $cease, $desist );
 		$this->assertStringContainsString( 'Cease', $output->getPageTitle() );
 		$this->assertEquals( 'Desist', $output->getJSVars()["wgRedirectedFrom"] );
 	}
 
 	public function testKeeptitleRedirect(): void {
-		$this->insertPage( 'Cease', 'to stop' );
-		$this->insertPage( 'Desist', '#REDIRECT [[Cease]] __KEEPTITLE__' );
+		$cease = Title::makeTitle( NS_MAIN, 'Cease' );
+		$desist = Title::makeTitle( NS_MAIN, 'Desist' );
+		$this->insertPage( $cease, 'to stop' );
+		$this->insertPage( $desist, '#REDIRECT [[Cease]] __KEEPTITLE__' );
 
-		$output = $this->viewPage( Title::newFromText( 'Cease' ), Title::newFromText( 'Desist' ) );
+		$output = $this->viewPage( $cease, $desist );
 		$this->assertStringContainsString( 'Desist', $output->getPageTitle() );
 		$this->assertArrayNotHasKey( "wgRedirectedFrom", $output->getJSVars() );
 	}
 
 	public function testKeeptitleWithDisplaytitle(): void {
-		$this->insertPage( 'Cease', 'to stop' );
-		$this->insertPage( 'Desist', '#REDIRECT [[Cease]] __KEEPTITLE__ {{DISPLAYTITLE:\'\'Desist\'\'}}' );
+		$cease = Title::makeTitle( NS_MAIN, 'Cease' );
+		$desist = Title::makeTitle( NS_MAIN, 'Desist' );
+		$this->insertPage( $cease, 'to stop' );
+		$this->insertPage( $desist, '#REDIRECT [[Cease]] __KEEPTITLE__ {{DISPLAYTITLE:\'\'Desist\'\'}}' );
 
-		$output = $this->viewPage( Title::newFromText( 'Cease' ), Title::newFromText( 'Desist' ) );
+		$output = $this->viewPage( $cease, $desist );
 		$this->assertStringContainsString( '<i>Desist</i>', $output->getPageTitle() );
 	}
 
